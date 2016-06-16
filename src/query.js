@@ -1,5 +1,5 @@
 var Query = function () {
-    this.selector = { _id: { $gt: 0 } };
+    this.selector = { };
 }
 
 Query.prototype.where = function (criteria) {
