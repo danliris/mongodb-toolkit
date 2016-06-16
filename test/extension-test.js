@@ -3,8 +3,9 @@ var should = require('should');
 var mongo = require('mongodb');
 require('../src/mongodb-extension');
 
-
+var person;
 var collection;
+
 before('#00. Initialize;', function (done) {
     var factory = require('mongo-factory');
     factory.getConnection(process.env.DB_CONNECTIONSTRING)
@@ -252,3 +253,22 @@ it('#19. Should be able to get data using db.where(criteria).execute() with logi
             done(e);
         })
 })
+
+it('#20. Should only return 2 fields (_id & name)', function (done) {
+    collection
+        .select(["_id", "name"])
+        .first()
+        .then(doc => {
+            doc.should.instanceOf(Object);
+            var count = 0;
+            for (var field in doc)
+                    count++;
+            if (count != 2)
+                throw new Error('should only have 2 properties');
+            done();
+        })
+        .catch(e => {
+            done(e);
+        })
+})
+

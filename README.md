@@ -225,7 +225,7 @@ Db
 
 ---
 ### select (fields)
-return result with specified fields.
+return result with specified fields. `_id` field is always projected, please refer to mongodb [projection][projection].
 
 **parameters**
 
@@ -254,3 +254,4 @@ here is a list of overridden methods by this library. you can always use `mongod
 [mongodb]:https://github.com/mongodb/node-mongodb-native
 [selector-syntax]:http://mongodb.github.io/node-mongodb-native/2.1/api/Collection.html#find
 [sort-syntax]:http://mongodb.github.io/node-mongodb-native/2.1/api/Cursor.html#sort
+[projection]:https://docs.mongodb.com/manual/tutorial/project-fields-from-query-results/

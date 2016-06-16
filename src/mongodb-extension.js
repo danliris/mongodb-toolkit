@@ -98,7 +98,11 @@ var Query = require('./query');
     function execute() {
         return new Promise((resolve, reject) => {
             var query = this.query();
-            var cursor = this.find(query.selector);
+            var projection = {};
+                    projection[field] = 1;
+                }
+                
+            var cursor = this.find(query.selector, projection);
 
             if (query.offset)
                 cursor = cursor.skip(query.offset);
