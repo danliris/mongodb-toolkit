@@ -99,6 +99,8 @@ var Query = require('./query');
         return new Promise((resolve, reject) => {
             var query = this.query();
             var projection = {};
+            if (query.fields && query.fields instanceof Array)
+                for (var field of query.fields) {
                     projection[field] = 1;
                 }
                 
