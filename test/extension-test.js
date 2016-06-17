@@ -3,6 +3,7 @@ var should = require('should');
 var mongo = require('mongodb');
 require('../src/mongodb-extension');
 
+var personId;
 var person;
 var collection;
 
@@ -18,8 +19,8 @@ before('#00. Initialize;', function (done) {
 
 it('#01. Should be able to create data', function (done) {
     collection.insert(helper.newData())
-        .then(doc => {
-            person = doc;
+        .then(id => {
+            personId = id;
             done();
         })
         .catch(e => {
@@ -29,9 +30,10 @@ it('#01. Should be able to create data', function (done) {
 
 it('#02. Should be able to get data by using db.single(criteria)', function (done) {
     collection
-        .single({ _id: person._id })
+        .single({ _id: personId })
         .then(doc => {
             doc.should.instanceOf(Object);
+            person = doc;
             done();
         })
         .catch(e => {
@@ -262,7 +264,7 @@ it('#20. Should only return 2 fields (_id & name)', function (done) {
             doc.should.instanceOf(Object);
             var count = 0;
             for (var field in doc)
-                    count++;
+                count++;
             if (count != 2)
                 throw new Error('should only have 2 properties');
             done();
@@ -272,3 +274,29 @@ it('#20. Should only return 2 fields (_id & name)', function (done) {
         })
 })
 
+it('#21. Should update successfuly', function (done) {
+    person.name = person.name + '[updated]';
+    collection.update(person)
+        .then(id => {
+            id.toString().should.equal(person._id.toString());
+            done();
+        })
+        .catch(e => {
+            done(e);
+        })
+});
+
+it('#22. Should be able to get updated data successfuly', function (done) {
+    collection
+        .single({ _id: personId })
+        .then(doc => {
+            doc.should.instanceOf(Object);
+            var idx = doc.name.indexOf('[updated]');
+            idx.should.not.equal(-1);
+            person = doc;
+            done();
+        })
+        .catch(e => {
+            done(e);
+        })
+});

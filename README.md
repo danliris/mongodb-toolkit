@@ -243,6 +243,46 @@ Db
 ```	
 
 ---
+
+## **Insert, Update, Delete**
+
+### insert (doc)
+return newly created document `_id`.
+
+**parameters**
+
+ - **doc** - document to be inserted. 
+ 
+**returns**
+Promise, resolving `_id` of inserted document.
+	
+```javascript 
+	db
+		.insert(doc)
+		.then(result=>{
+			//result is newly created document `_id`
+	})
+```	
+
+---
+### update (doc)
+return updated document `_id`.
+
+**parameters**
+
+ - **doc** - document to be updated, must contains `_id`  field
+ 
+**returns**
+Promise, resolving `_id` of updated document.
+	
+```javascript 
+	db
+		.update(doc)
+		.then(result=>{
+			//result is newly created document `_id` .
+	})
+```	
+---
 ## **Overridden methods**
 here is a list of overridden methods by this library. you can always use `mongodb` implementation by prefixing the method with underscore `_`
 

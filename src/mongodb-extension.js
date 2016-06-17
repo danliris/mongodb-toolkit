@@ -1,4 +1,5 @@
 var Db = require('mongodb').Db;
+var ObjectId = require('mongodb').ObjectId;
 var Collection = require('mongodb').Collection;
 var Query = require('./query');
 
@@ -77,15 +78,38 @@ var Query = require('./query');
                         reject(this.s.name + ": failed to insert");
                     else {
                         var id = result.insertedId;
-                        this.single({ _id: id })
-                            .then(doc => {
-                                resolve(doc);
-                            })
-                            .catch(e => reject(e));
+                        resolve(id);
                     }
                 })
                 .catch(e => reject(e));
         })
+    }
+
+    function update(doc) {
+        return new Promise((resolve, reject) => {
+            if (!doc._id)
+                reject('unable to update document without _id field.')
+            else {
+                var q = { _id: doc._id };
+                this.single(q)
+                    .then(dbDoc => {
+                        var _doc = Object.assign(dbDoc, doc);
+                        delete _doc._id;
+                        this.updateOne(q, { $set: _doc })
+                            .then(updateResult => {
+                                if (updateResult.result.n != 1 && updateResult.result.ok != 1)
+                                    reject('update result not equal 1 or update result is not ok');
+                                else {
+                                    resolve(q._id);
+                                }
+                            })
+                            .catch(e => {
+                                reject(e);
+                            });
+                    })
+                    .catch(e => reject(e));
+            }
+        });
     }
 
     function query() {
@@ -103,7 +127,7 @@ var Query = require('./query');
                 for (var field of query.fields) {
                     projection[field] = 1;
                 }
-                
+
             var cursor = this.find(query.selector, projection);
 
             if (query.offset)
@@ -115,9 +139,13 @@ var Query = require('./query');
 
             cursor.toArray()
                 .then(docs => {
+                    this._query = null;
                     resolve(docs);
                 })
-                .catch(e => reject(e));
+                .catch(e => {
+                    this._query = null;
+                    reject(e);
+                });
         });
     }
 
@@ -148,8 +176,13 @@ var Query = require('./query');
     // Preserve original method with underscore '_' prefix;
     if (Collection.prototype.insert)
         Collection.prototype._insert = Collection.prototype.insert;
-
     Collection.prototype.insert = insert;
+
+    // Preserve original method with underscore '_' prefix;
+    if (Collection.prototype.update)
+        Collection.prototype._update = Collection.prototype.update;
+    Collection.prototype.update = update;
+
     Collection.prototype.single = single;
     Collection.prototype.singleOrDefault = singleOrDefault;
     Collection.prototype.first = first;
