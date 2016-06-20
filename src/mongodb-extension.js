@@ -15,7 +15,7 @@ var Query = require('./query');
                 .execute()
                 .then(docs => {
                     if (docs.length == 0)
-                        reject('no document found');
+                        reject('no document found in `' + this.s.name + '`');
                     else if (docs.length > 1)
                         reject('expected one doc');
                     else
@@ -47,7 +47,7 @@ var Query = require('./query');
                 .execute()
                 .then(docs => {
                     if (docs.length == 0)
-                        reject('no document found');
+                        reject('no document found in `' + this.s.name + '`');
                     else
                         resolve(docs[0]);
                 })
