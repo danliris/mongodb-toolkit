@@ -279,7 +279,26 @@ Promise, resolving `_id` of updated document.
 	db
 		.update(doc)
 		.then(result=>{
-			//result is newly created document `_id` .
+			//result is updated document `_id` .
+	})
+```	
+
+---
+### delete (doc)
+return delete document `_id`.
+
+**parameters**
+
+ - **doc** - document to be deleted, must contains `_id`  field
+ 
+**returns**
+Promise, resolving `_id` of deleted document.
+	
+```javascript 
+	db
+		.delete(doc)
+		.then(result=>{
+			//result is deleted document `_id` .
 	})
 ```	
 ---

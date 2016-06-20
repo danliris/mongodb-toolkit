@@ -112,6 +112,28 @@ var Query = require('./query');
         });
     }
 
+    function _delete(doc)
+    {
+        return new Promise((resolve, reject) => {
+            if (!doc._id)
+                reject('unable to delete document without _id field.')
+            else {
+                var q = { _id: doc._id };
+                this.deleteOne(q)
+                    .then(deleteResult => {
+                        if (deleteResult.result.n != 1 && deleteResult.result.ok != 1)
+                            reject('delete result not equal 1 or delete result is not ok');
+                        else {
+                            resolve(q._id);
+                        }
+                    })
+                    .catch(e => {
+                        reject(e);
+                    });
+            }
+        });
+    }
+
     function query() {
         if (!this._query) {
             this._query = new Query();
@@ -182,6 +204,7 @@ var Query = require('./query');
     if (Collection.prototype.update)
         Collection.prototype._update = Collection.prototype.update;
     Collection.prototype.update = update;
+    Collection.prototype.delete = _delete;
 
     Collection.prototype.single = single;
     Collection.prototype.singleOrDefault = singleOrDefault;
