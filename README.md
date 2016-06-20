@@ -285,7 +285,7 @@ Promise, resolving `_id` of updated document.
 
 ---
 ### delete (doc)
-return delete document `_id`.
+return deleted document `_id`.
 
 **parameters**
 

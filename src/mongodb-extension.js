@@ -90,7 +90,7 @@ var Query = require('./query');
             if (!doc._id)
                 reject('unable to update document without _id field.')
             else {
-                var q = { _id: doc._id };
+                var q = { _id: new ObjectId(doc._id) };
                 this.single(q)
                     .then(dbDoc => {
                         var _doc = Object.assign(dbDoc, doc);
@@ -112,13 +112,12 @@ var Query = require('./query');
         });
     }
 
-    function _delete(doc)
-    {
+    function _delete(doc) {
         return new Promise((resolve, reject) => {
             if (!doc._id)
                 reject('unable to delete document without _id field.')
             else {
-                var q = { _id: doc._id };
+                var q = { _id: new ObjectId(doc._id) };
                 this.deleteOne(q)
                     .then(deleteResult => {
                         if (deleteResult.result.n != 1 && deleteResult.result.ok != 1)
