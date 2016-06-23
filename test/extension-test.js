@@ -13,7 +13,10 @@ before('#00. Initialize;', function (done) {
         .then(db => {
             collection = db.use('people');
             done();
-        });
+        })
+        .catch(e => {
+            done(e);
+        })
 });
 
 
