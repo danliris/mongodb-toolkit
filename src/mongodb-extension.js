@@ -3,7 +3,7 @@ var ObjectId = require('mongodb').ObjectId;
 var Collection = require('mongodb').Collection;
 var Query = require('./query');
 
-(function () {
+(function() {
 
     function single(query) {
         return new Promise((resolve, reject) => {
@@ -11,7 +11,9 @@ var Query = require('./query');
                 this.where(query);
 
             this.take(2)
-                .orderBy([{ _id: -1 }])
+                .orderBy([{
+                    _id: -1
+                }])
                 .execute()
                 .then(docs => {
                     if (docs.length == 0)
@@ -26,6 +28,7 @@ var Query = require('./query');
                 });
         });
     }
+
     function singleOrDefault(query) {
         return new Promise((resolve, reject) => {
             this.single(query)
@@ -90,12 +93,16 @@ var Query = require('./query');
             if (!doc._id)
                 reject('unable to update document without _id field.')
             else {
-                var q = { _id: new ObjectId(doc._id) };
+                var q = {
+                    _id: new ObjectId(doc._id)
+                };
                 this.single(q)
                     .then(dbDoc => {
                         var _doc = Object.assign(dbDoc, doc);
                         delete _doc._id;
-                        this.updateOne(q, { $set: _doc })
+                        this.updateOne(q, {
+                                $set: _doc
+                            })
                             .then(updateResult => {
                                 if (updateResult.result.n != 1 && updateResult.result.ok != 1)
                                     reject('update result not equal 1 or update result is not ok');
@@ -117,7 +124,9 @@ var Query = require('./query');
             if (!doc._id)
                 reject('unable to delete document without _id field.')
             else {
-                var q = { _id: new ObjectId(doc._id) };
+                var q = {
+                    _id: new ObjectId(doc._id)
+                };
                 this.deleteOne(q)
                     .then(deleteResult => {
                         if (deleteResult.result.n != 1 && deleteResult.result.ok != 1)
@@ -174,22 +183,27 @@ var Query = require('./query');
         this.query().where(criteria);
         return this;
     }
+
     function take(limit) {
         this.query().take(limit);
         return this;
     }
+
     function skip(skip) {
         this.query().skip(skip);
         return this;
     }
+
     function page(page, size) {
         this.query().page(page, size);
         return this;
     }
-    function orderBy(order) {
-        this.query().orderBy(order);
+
+    function orderBy(field, asc) {
+        this.query().orderBy(field, asc);
         return this;
     }
+
     function select(fields) {
         this.query().select(fields);
         return this;
@@ -218,7 +232,7 @@ var Query = require('./query');
     Collection.prototype.orderBy = orderBy;
     Collection.prototype.select = select;
 
-    Db.prototype.use = function (collectionName) {
+    Db.prototype.use = function(collectionName) {
         return this.collection(collectionName);
     }
 })();

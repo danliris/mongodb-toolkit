@@ -21,8 +21,8 @@ Query.prototype.skip = function(offset) {
 }
 
 Query.prototype.page = function(page, size) {
-    var _page = (page - 1) < 0 ? 0 : (page - 1);
-    var _size = size < 1 ? 1 : size;
+    var _page = (parseInt(page || '0', 10) - 1) < 0 ? 0 : (parseInt(page || '0', 10) - 1);
+    var _size = parseInt(size || '1', 10) < 1 ? 1 : parseInt(size || '1', 10);
 
     this.skip(_page * _size).take(_size);
     return this;
@@ -30,7 +30,7 @@ Query.prototype.page = function(page, size) {
 
 Query.prototype.orderBy = function(field, asc) {
     this.sort = {};
-    this.sort[field] = (asc || true) ? 1 : -1;;
+    this.sort[field] = (asc || 'true').toString().toLowerCase() === 'true' ? 1 : -1;;
     return this;
 }
 
