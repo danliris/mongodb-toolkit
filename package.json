@@ -1,6 +1,6 @@
 {
   "name": "mongodb-toolkit",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "mongodb toolkit",
   "main": "index.js",
   "scripts": {
@@ -20,6 +20,14 @@
     "mocha": "^2.5.3",
     "mongo-factory": "^1.0.0",
     "mongodb": "^2.1.18",
+    "should": "^9.0.2"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "mongodb": "^2.1.18",
+    "mongo-factory": "^1.0.0",
     "should": "^9.0.2"
   }
 }

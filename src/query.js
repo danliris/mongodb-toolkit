@@ -1,23 +1,26 @@
-var Query = function () {
-    this.selector = { };
+var Query = function() {
+    this.selector = {};
+    this.sort = {
+        '_id': 1
+    };
 }
 
-Query.prototype.where = function (criteria) {
+Query.prototype.where = function(criteria) {
     this.selector = criteria;
     return this;
 }
 
-Query.prototype.take = function (limit) {
+Query.prototype.take = function(limit) {
     this.limit = limit;
     return this;
 }
 
-Query.prototype.skip = function (offset) {
+Query.prototype.skip = function(offset) {
     this.offset = offset;
     return this;
 }
 
-Query.prototype.page = function (page, size) {
+Query.prototype.page = function(page, size) {
     var _page = (page - 1) < 0 ? 0 : (page - 1);
     var _size = size < 1 ? 1 : size;
 
@@ -25,17 +28,18 @@ Query.prototype.page = function (page, size) {
     return this;
 }
 
-Query.prototype.orderBy = function(order){
-    this.sort = order;
+Query.prototype.orderBy = function(field, asc) {
+    this.sort = {};
+    this.sort[field] = (asc || true) ? 1 : -1;;
     return this;
 }
 
-Query.prototype.select = function (fields) {
+Query.prototype.select = function(fields) {
     this.fields = fields;
     return this;
 }
 
-Query.prototype.index = function (index) {
+Query.prototype.index = function(index) {
     this.use_index = index;
     return this;
 }
