@@ -178,6 +178,7 @@ var Query = require('./query');
                                 count: docs.length,
                                 size: query.limit,
                                 total: count,
+                                page: query.offset / query.limit + 1
                             });
                         })
                         .catch(e => {
@@ -217,8 +218,8 @@ var Query = require('./query');
         this.query().orderBy(field, asc);
         return this;
     }
-    function order(order)
-    {
+
+    function order(order) {
         this.query().order(order);
         return this;
     }
@@ -254,5 +255,5 @@ var Query = require('./query');
 
     Db.prototype.use = function(collectionName) {
         return this.collection(collectionName);
-    }
+    };
 })();
