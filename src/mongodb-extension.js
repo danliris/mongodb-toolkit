@@ -16,12 +16,12 @@ var Query = require('./query');
                 }])
                 .execute()
                 .then(docs => {
-                    if (docs.length == 0)
+                    if (docs.count == 0)
                         reject('no document found in `' + this.s.name + '`');
-                    else if (docs.length > 1)
+                    else if (docs.count > 1)
                         reject('expected one doc');
                     else
-                        resolve(docs[0]);
+                        resolve(docs.data[0]);
                 })
                 .catch(e => {
                     reject(e);
@@ -49,10 +49,10 @@ var Query = require('./query');
                 .take(1)
                 .execute()
                 .then(docs => {
-                    if (docs.length == 0)
+                    if (docs.count == 0)
                         reject('no document found in `' + this.s.name + '`');
                     else
-                        resolve(docs[0]);
+                        resolve(docs.data[0]);
                 })
                 .catch(e => {
                     reject(e);
@@ -160,17 +160,31 @@ var Query = require('./query');
 
             var cursor = this.find(query.selector, projection);
 
-            if (query.offset)
-                cursor = cursor.skip(query.offset);
-            if (query.limit)
-                cursor = cursor.limit(query.limit);
-            if (query.sort)
-                cursor = cursor.sort(query.sort);
+            cursor.count()
+                .then(count => {
 
-            cursor.toArray()
-                .then(docs => {
-                    this._query = null;
-                    resolve(docs);
+                    if (query.offset)
+                        cursor = cursor.skip(query.offset);
+                    if (query.limit)
+                        cursor = cursor.limit(query.limit);
+                    if (query.sort)
+                        cursor = cursor.sort(query.sort);
+
+                    cursor.toArray()
+                        .then(docs => {
+                            this._query = null;
+                            resolve({
+                                data: docs,
+                                count: docs.length,
+                                size: query.limit,
+                                total: count,
+                            });
+                        })
+                        .catch(e => {
+                            this._query = null;
+                            reject(e);
+                        });
+
                 })
                 .catch(e => {
                     this._query = null;
@@ -203,6 +217,11 @@ var Query = require('./query');
         this.query().orderBy(field, asc);
         return this;
     }
+    function order(order)
+    {
+        this.query().order(order);
+        return this;
+    }
 
     function select(fields) {
         this.query().select(fields);
@@ -230,6 +249,7 @@ var Query = require('./query');
     Collection.prototype.skip = skip;
     Collection.prototype.page = page;
     Collection.prototype.orderBy = orderBy;
+    Collection.prototype.order = order;
     Collection.prototype.select = select;
 
     Db.prototype.use = function(collectionName) {

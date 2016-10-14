@@ -34,6 +34,12 @@ Query.prototype.orderBy = function(field, asc) {
     return this;
 }
 
+Query.prototype.order = function(order) {
+    this.sort = order;
+    // this.sort[field] = (asc || 'true').toString().toLowerCase() === 'true' ? 1 : -1;;
+    return this;
+}
+
 Query.prototype.select = function(fields) {
     this.fields = fields;
     return this;

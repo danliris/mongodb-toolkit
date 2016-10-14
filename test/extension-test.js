@@ -237,8 +237,8 @@ it('#18. Should be able to get data using db.where(criteria).execute() with simp
     collection
         .where({ name: 'some name' })
         .execute()
-        .then(doc => {
-            doc.should.instanceOf(Array);
+        .then(result => {
+            result.data.should.instanceOf(Array);
             done();
         })
         .catch(e => {
@@ -250,8 +250,8 @@ it('#19. Should be able to get data using db.where(criteria).execute() with logi
     collection
         .where({ $and: [{ name: person.name }, { _id: person._id }] })
         .execute()
-        .then(doc => {
-            doc.should.instanceOf(Array);
+        .then(result => {
+            result.data.should.instanceOf(Array);
             done();
         })
         .catch(e => {
