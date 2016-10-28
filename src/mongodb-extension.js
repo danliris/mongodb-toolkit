@@ -173,13 +173,19 @@ var Query = require('./query');
                     cursor.toArray()
                         .then(docs => {
                             this._query = null;
-                            resolve({
+                            var result = {
                                 data: docs,
                                 count: docs.length,
                                 size: query.limit,
                                 total: count,
                                 page: query.offset / query.limit + 1
-                            });
+                            };
+                            if (query.fields && query.fields instanceof Array)
+                                result.select = query.fields;
+                            result.order = query.sort;
+                            result.filter = query.filter;
+
+                            resolve(result);
                         })
                         .catch(e => {
                             this._query = null;
