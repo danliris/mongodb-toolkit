@@ -1,4 +1,5 @@
-
+[![codebeat badge](https://codebeat.co/badges/0ef5ea43-1689-458b-90ff-8b2f32f69f1d)](https://codebeat.co/projects/github-com-pinkgorilla-mongodb-toolkit)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/80273a96472b4f5f94bc0769e73785bc)](https://www.codacy.com/app/tris-setiawan/mongodb-toolkit?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pinkgorilla/mongodb-toolkit&amp;utm_campaign=Badge_Grade)
 # mongodb-toolkit
 `mongodb-toolkit` is a wrapper library for `mongodb`. this library overrides some method implementation of `mongodb` please refer to overridden methods section for more details.
 
