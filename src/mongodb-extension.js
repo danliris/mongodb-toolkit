@@ -86,17 +86,16 @@ var Query = require("./query");
         return this._getDbVersion(doc)
             .then(dbDoc => {
                 return this.updateOne(q, {
-                        $set: dbDoc
-                    })
-                    .then((updateResult) => {
-                        if (updateResult.result.n !== 1 && updateResult.result.ok !== 1) {
-                            return Promise.reject("update result not equal 1 or update result is not ok");
-                        }
-                        else {
-                            return Promise.resolve(q._id);
-                        }
-                    });
-
+                    $set: dbDoc
+                });
+            })
+            .then((updateResult) => {
+                if (updateResult.result.n !== 1 && updateResult.result.ok !== 1) {
+                    return Promise.reject("update result not equal 1 or update result is not ok");
+                }
+                else {
+                    return Promise.resolve(q._id);
+                }
             });
     }
 
