@@ -67,7 +67,7 @@ var Query = require("./query");
             });
     }
 
-    function update(doc) {
+    function _getDbVersion(doc) {
         var q = {
             _id: ObjectId.isValid(doc._id) ? new ObjectId(doc._id) : null
         };
@@ -75,8 +75,18 @@ var Query = require("./query");
             .then((dbDoc) => {
                 var _doc = Object.assign(dbDoc, doc);
                 delete _doc._id;
+                return Promise.resolve(_doc);
+            });
+    }
+
+    function update(doc) {
+        var q = {
+            _id: ObjectId.isValid(doc._id) ? new ObjectId(doc._id) : null
+        };
+        return this._getDbVersion(doc)
+            .then(dbDoc => {
                 return this.updateOne(q, {
-                        $set: _doc
+                        $set: dbDoc
                     })
                     .then((updateResult) => {
                         if (updateResult.result.n !== 1 && updateResult.result.ok !== 1) {
@@ -86,6 +96,7 @@ var Query = require("./query");
                             return Promise.resolve(q._id);
                         }
                     });
+
             });
     }
 
@@ -193,6 +204,7 @@ var Query = require("./query");
     if (Collection.prototype.update) {
         Collection.prototype._update = Collection.prototype.update;
     }
+    Collection.prototype._getDbVersion = _getDbVersion;
     Collection.prototype.update = update;
     Collection.prototype.delete = _delete;
 

@@ -1,18 +1,18 @@
-var helper = require('./helper');
-var should = require('should');
+var helper = require("./helper");
+var should = require("should");
 
-require('mongodb');
-require('../src/mongodb-extension');
+require("mongodb");
+require("../src/mongodb-extension");
 
 var personId;
 var person;
 var collection;
 
-before('#00. Initialize;', function(done) {
-    var factory = require('mongo-factory');
+before("#00. Initialize;", function(done) {
+    var factory = require("mongo-factory");
     factory.getConnection(process.env.DB_CONNECTIONSTRING)
         .then((db) => {
-            collection = db.use('people');
+            collection = db.use("people");
             done();
         })
         .catch((e) => {
@@ -21,7 +21,7 @@ before('#00. Initialize;', function(done) {
 });
 
 
-it('#01. Should be able to create data', function(done) {
+it("#01. Should be able to create data", function(done) {
     collection.insert(helper.newData())
         .then((id) => {
             personId = id;
@@ -32,7 +32,7 @@ it('#01. Should be able to create data', function(done) {
         });
 });
 
-it('#02. Should be able to get data by using db.single(criteria)', function(done) {
+it("#02. Should be able to get data by using db.single(criteria)", function(done) {
     collection
         .single({
             _id: personId
@@ -47,7 +47,7 @@ it('#02. Should be able to get data by using db.single(criteria)', function(done
         });
 });
 
-it('#03. Should be able to get data by using db.where(criteria).single()', function(done) {
+it("#03. Should be able to get data by using db.where(criteria).single()", function(done) {
     collection
         .where({
             _id: person._id
@@ -62,7 +62,7 @@ it('#03. Should be able to get data by using db.where(criteria).single()', funct
         });
 });
 
-it('#04. Should error when using db.where(criteria).single() with no results ', function(done) {
+it("#04. Should error when using db.where(criteria).single() with no results ", function(done) {
     collection
         .where({
             _id: 0
@@ -70,21 +70,21 @@ it('#04. Should error when using db.where(criteria).single() with no results ', 
         .single()
         .then((doc) => {
             doc.should.equal(null);
-            done('should have error');
+            done("should have error");
         })
         .catch((e) => {
             done();
         });
 });
 
-it('#05. Should error when using db.single(criteria) with no results ', function(done) {
+it("#05. Should error when using db.single(criteria) with no results ", function(done) {
     collection
         .single({
             _id: 0
         })
         .then((doc) => {
             doc.should.equal(null);
-            done('should have error');
+            done("should have error");
         })
         .catch((e) => {
             done();
@@ -92,7 +92,7 @@ it('#05. Should error when using db.single(criteria) with no results ', function
 });
 
 
-it('#06. Should error when using db.where(criteria).single() more than one result', function(done) {
+it("#06. Should error when using db.where(criteria).single() more than one result", function(done) {
     collection
         .where({
             _id: {
@@ -102,14 +102,14 @@ it('#06. Should error when using db.where(criteria).single() more than one resul
         .single()
         .then((doc) => {
             doc.should.equal(null);
-            done('should have error');
+            done("should have error");
         })
         .catch((e) => {
             done();
         });
 });
 
-it('#07. Should error when using db.single(criteria) with more than one result', function(done) {
+it("#07. Should error when using db.single(criteria) with more than one result", function(done) {
     collection
         .single({
             _id: {
@@ -118,14 +118,14 @@ it('#07. Should error when using db.single(criteria) with more than one result',
         })
         .then((doc) => {
             doc.should.equal(null);
-            done('should have error');
+            done("should have error");
         })
         .catch((e) => {
             done();
         });
 });
 
-it('#08. Should be able to get data by using db.first(criteria)', function(done) {
+it("#08. Should be able to get data by using db.first(criteria)", function(done) {
     collection
         .first({
             age: {
@@ -141,7 +141,7 @@ it('#08. Should be able to get data by using db.first(criteria)', function(done)
         });
 });
 
-it('#09. Should be able to get data by using db.where(criteria).first()', function(done) {
+it("#09. Should be able to get data by using db.where(criteria).first()", function(done) {
     collection
         .where({
             age: {
@@ -158,7 +158,7 @@ it('#09. Should be able to get data by using db.where(criteria).first()', functi
         });
 });
 
-it('#10. Should error when using db.where(criteria).first() with no results ', function(done) {
+it("#10. Should error when using db.where(criteria).first() with no results ", function(done) {
     collection
         .where({
             _id: 0
@@ -166,28 +166,28 @@ it('#10. Should error when using db.where(criteria).first() with no results ', f
         .first()
         .then((doc) => {
             doc.should.equal(null);
-            done('should have error');
+            done("should have error");
         })
         .catch((e) => {
             done();
         });
 });
 
-it('#11. Should error when using db.first(criteria) with no results ', function(done) {
+it("#11. Should error when using db.first(criteria) with no results ", function(done) {
     collection
         .first({
             _id: 0
         })
         .then((doc) => {
             doc.should.equal(null);
-            done('should have error');
+            done("should have error");
         })
         .catch((e) => {
             done();
         });
 });
 
-it('#12. Should be able to get data by using db.singleOrDefault(criteria)', function(done) {
+it("#12. Should be able to get data by using db.singleOrDefault(criteria)", function(done) {
     collection
         .singleOrDefault({
             _id: person._id
@@ -201,7 +201,7 @@ it('#12. Should be able to get data by using db.singleOrDefault(criteria)', func
         });
 });
 
-it('#13. Should be able to get data by using db.where(criteria).singleOrDefault()', function(done) {
+it("#13. Should be able to get data by using db.where(criteria).singleOrDefault()", function(done) {
     collection
         .where({
             _id: person._id
@@ -216,7 +216,7 @@ it('#13. Should be able to get data by using db.where(criteria).singleOrDefault(
         });
 });
 
-it('#14. Should return null when using db.where(criteria).singleOrDefault() with no results ', function(done) {
+it("#14. Should return null when using db.where(criteria).singleOrDefault() with no results ", function(done) {
     collection
         .where({
             _id: 0
@@ -231,7 +231,7 @@ it('#14. Should return null when using db.where(criteria).singleOrDefault() with
         });
 });
 
-it('#15. Should return null using db.singleOrDefault(criteria) with no results ', function(done) {
+it("#15. Should return null using db.singleOrDefault(criteria) with no results ", function(done) {
     collection
         .singleOrDefault({
             _id: 0
@@ -245,7 +245,7 @@ it('#15. Should return null using db.singleOrDefault(criteria) with no results '
         });
 });
 
-it('#16. Should error when using db.where(criteria).singleOrDefault() more than one result', function(done) {
+it("#16. Should error when using db.where(criteria).singleOrDefault() more than one result", function(done) {
     collection
         .where({
             _id: {
@@ -255,14 +255,14 @@ it('#16. Should error when using db.where(criteria).singleOrDefault() more than 
         .singleOrDefault()
         .then((doc) => {
             doc.should.equal(null);
-            done('should have error');
+            done("should have error");
         })
         .catch((e) => {
             done();
         });
 });
 
-it('#17. Should error when using db.singleOrDefault(criteria) with more than one result', function(done) {
+it("#17. Should error when using db.singleOrDefault(criteria) with more than one result", function(done) {
     collection
         .singleOrDefault({
             _id: {
@@ -271,17 +271,17 @@ it('#17. Should error when using db.singleOrDefault(criteria) with more than one
         })
         .then((doc) => {
             doc.should.equal(null);
-            done('should have error');
+            done("should have error");
         })
         .catch((e) => {
             done();
         });
 });
 
-it('#18. Should be able to get data using db.where(criteria).execute() with simple criteria', function(done) {
+it("#18. Should be able to get data using db.where(criteria).execute() with simple criteria", function(done) {
     collection
         .where({
-            name: 'some name'
+            name: "some name"
         })
         .execute()
         .then((result) => {
@@ -293,7 +293,7 @@ it('#18. Should be able to get data using db.where(criteria).execute() with simp
         });
 });
 
-it('#19. Should be able to get data using db.where(criteria).execute() with logical $and criteria', function(done) {
+it("#19. Should be able to get data using db.where(criteria).execute() with logical $and criteria", function(done) {
     collection
         .where({
             $and: [{
@@ -312,14 +312,14 @@ it('#19. Should be able to get data using db.where(criteria).execute() with logi
         });
 });
 
-it('#20. Should only return 2 fields (_id & name)', function(done) {
+it("#20. Should only return 2 fields (_id & name)", function(done) {
     collection
         .select(["_id", "name"])
         .first()
         .then((doc) => {
             doc.should.instanceOf(Object);
             if (Object.getOwnPropertyNames(doc).length !== 2) {
-                throw new Error('should only have 2 properties');
+                throw new Error("should only have 2 properties");
             }
             done();
         })
@@ -328,8 +328,8 @@ it('#20. Should only return 2 fields (_id & name)', function(done) {
         });
 });
 
-it('#21. Should update successfuly', function(done) {
-    person.name = person.name + '[updated]';
+it("#21. Should update successfuly", function(done) {
+    person.name = person.name + "[updated]";
     collection.update(person)
         .then((id) => {
             id.toString().should.equal(person._id.toString());
@@ -340,14 +340,14 @@ it('#21. Should update successfuly', function(done) {
         });
 });
 
-it('#22. Should be able to get updated data successfuly', function(done) {
+it("#22. Should be able to get updated data successfuly", function(done) {
     collection
         .single({
             _id: personId
         })
         .then((doc) => {
             doc.should.instanceOf(Object);
-            var idx = doc.name.indexOf('[updated]');
+            var idx = doc.name.indexOf("[updated]");
             idx.should.not.equal(-1);
             person = doc;
             done();
@@ -357,7 +357,7 @@ it('#22. Should be able to get updated data successfuly', function(done) {
         });
 });
 
-it('#23. Should be able to delete data successfully', function(done) {
+it("#23. Should be able to delete data successfully", function(done) {
     collection.delete(person)
         .then((result) => {
             done();
@@ -367,13 +367,13 @@ it('#23. Should be able to delete data successfully', function(done) {
         });
 });
 
-it('#24. Should not be able to get deleted data', function(done) {
+it("#24. Should not be able to get deleted data", function(done) {
     collection
         .single({
             _id: personId
         })
         .then((doc) => {
-            done('should have error');
+            done("should have error");
         })
         .catch((e) => {
             done();
