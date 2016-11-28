@@ -6,19 +6,22 @@ var Query = require("./query");
 (function() {
 
     function single(query, _defaultToNull) {
-        if (query)
+        if (query) {
             this.where(query);
-
+        }
         return this.take(2)
             .orderBy([{}])
             .execute()
             .then((docs) => {
-                if (docs.count === 0)
+                if (docs.count === 0) {
                     return _defaultToNull ? Promise.resolve(null) : Promise.reject("no document found in `" + this.s.name + "`");
-                else if (docs.count === 1)
+                }
+                else if (docs.count === 1) {
                     return Promise.resolve(docs.data[0]);
-                else
+                }
+                else {
                     return Promise.reject("expected one doc");
+                }
             });
     }
 
@@ -72,8 +75,9 @@ var Query = require("./query");
                         $set: _doc
                     })
                     .then((updateResult) => {
-                        if (updateResult.result.n != 1 && updateResult.result.ok != 1)
+                        if (updateResult.result.n !== 1 && updateResult.result.ok !== 1) {
                             return Promise.reject("update result not equal 1 or update result is not ok");
+                        }
                         else {
                             return Promise.resolve(q._id);
                         }
@@ -87,8 +91,9 @@ var Query = require("./query");
         };
         return this.deleteOne(q)
             .then((deleteResult) => {
-                if (deleteResult.result.n != 1 && deleteResult.result.ok != 1)
+                if (deleteResult.result.n !== 1 && deleteResult.result.ok !== 1) {
                     return Promise.reject("delete result not equal 1 or delete result is not ok");
+                }
                 else {
                     return Promise.resolve(q._id);
                 }
@@ -120,7 +125,7 @@ var Query = require("./query");
     function execute() {
         var query = this.query();
         return Promise.all([this.find(query.selector).count(), this._load(query)])
-            .then(results => {
+            .then((results) => {
                 var count = results[0];
                 var docs = results[1];
 
@@ -175,13 +180,15 @@ var Query = require("./query");
         return this;
     }
     // Preserve original method with underscore "_" prefix;
-    if (Collection.prototype.insert)
+    if (Collection.prototype.insert) {
         Collection.prototype._insert = Collection.prototype.insert;
+    }
     Collection.prototype.insert = insert;
 
     // Preserve original method with underscore "_" prefix;
-    if (Collection.prototype.update)
+    if (Collection.prototype.update) {
         Collection.prototype._update = Collection.prototype.update;
+    }
     Collection.prototype.update = update;
     Collection.prototype.delete = _delete;
 

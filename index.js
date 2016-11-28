@@ -1,2 +1,2 @@
-var mongo = require('mongodb');
-require('./src/mongodb-extension');
+var mongo = require("mongodb");
+require("./src/mongodb-extension");
