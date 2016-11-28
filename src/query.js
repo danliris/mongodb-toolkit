@@ -1,4 +1,4 @@
-var Query = function() {
+var Query = function () {
     this.selector = {};
     this.sort = {};
     this.offset = 0;
@@ -6,17 +6,17 @@ var Query = function() {
     this.fields = [];
 };
 
-Query.prototype.where = function(criteria) {
+Query.prototype.where = function (criteria) {
     this.selector = criteria;
     return this;
 };
 
-Query.prototype.take = function(limit) {
+Query.prototype.take = function (limit) {
     this.limit = limit < 0 ? 0 : limit;
     return this;
 };
 
-Query.prototype.skip = function(offset) {
+Query.prototype.skip = function (offset) {
     this.offset = offset < 0 ? 0 : offset;
     return this;
 };
@@ -41,7 +41,7 @@ function parseSize(size) {
     }
 }
 
-Query.prototype.page = function(page, size) {
+Query.prototype.page = function (page, size) {
     var _page = parsePage(page);
     var _size = parseSize(size);
 
@@ -49,22 +49,25 @@ Query.prototype.page = function(page, size) {
     return this;
 };
 
-Query.prototype.orderBy = function(field, asc) {
+Query.prototype.orderBy = function (field, asc) {
     this.sort = {};
     this.sort[field] = (asc || "true").toString().toLowerCase() === "true" ? 1 : -1;
     return this;
 };
 
-Query.prototype.order = function(order) {
+Query.prototype.order = function (order) {
     this.sort = order;
     return this;
 };
 
-Query.prototype.select = function(fields) {
+Query.prototype.select = function (fields) {
     if (!(fields instanceof Array)) {
-        throw Error("fields should be an array of string");
+        this.fields = [];
+        // throw Error("fields should be an array of string");
     }
-    this.fields = fields;
+    else {
+        this.fields = fields;
+    }
     return this;
 };
 
