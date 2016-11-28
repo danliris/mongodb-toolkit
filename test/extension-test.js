@@ -1,6 +1,7 @@
 var helper = require('./helper');
 var should = require('should');
-var mongo = require('mongodb');
+
+require('mongodb');
 require('../src/mongodb-extension');
 
 var personId;
@@ -16,7 +17,7 @@ before('#00. Initialize;', function (done) {
         })
         .catch(e => {
             done(e);
-        })
+        });
 });
 
 
@@ -28,8 +29,8 @@ it('#01. Should be able to create data', function (done) {
         })
         .catch(e => {
             done(e);
-        })
-})
+        });
+});
 
 it('#02. Should be able to get data by using db.single(criteria)', function (done) {
     collection
@@ -41,8 +42,8 @@ it('#02. Should be able to get data by using db.single(criteria)', function (don
         })
         .catch(e => {
             done(e);
-        })
-})
+        });
+});
 
 it('#03. Should be able to get data by using db.where(criteria).single()', function (done) {
     collection
@@ -54,8 +55,8 @@ it('#03. Should be able to get data by using db.where(criteria).single()', funct
         })
         .catch(e => {
             done(e);
-        })
-})
+        });
+});
 
 it('#04. Should error when using db.where(criteria).single() with no results ', function (done) {
     collection
@@ -67,8 +68,8 @@ it('#04. Should error when using db.where(criteria).single() with no results ', 
         })
         .catch(e => {
             done();
-        })
-})
+        });
+});
 
 it('#05. Should error when using db.single(criteria) with no results ', function (done) {
     collection
@@ -79,8 +80,8 @@ it('#05. Should error when using db.single(criteria) with no results ', function
         })
         .catch(e => {
             done();
-        })
-})
+        });
+});
 
 
 it('#06. Should error when using db.where(criteria).single() more than one result', function (done) {
@@ -93,8 +94,8 @@ it('#06. Should error when using db.where(criteria).single() more than one resul
         })
         .catch(e => {
             done();
-        })
-})
+        });
+});
 
 it('#07. Should error when using db.single(criteria) with more than one result', function (done) {
     collection
@@ -105,8 +106,8 @@ it('#07. Should error when using db.single(criteria) with more than one result',
         })
         .catch(e => {
             done();
-        })
-})
+        });
+});
 
 it('#08. Should be able to get data by using db.first(criteria)', function (done) {
     collection
@@ -117,8 +118,8 @@ it('#08. Should be able to get data by using db.first(criteria)', function (done
         })
         .catch(e => {
             done(e);
-        })
-})
+        });
+});
 
 it('#09. Should be able to get data by using db.where(criteria).first()', function (done) {
     collection
@@ -130,8 +131,8 @@ it('#09. Should be able to get data by using db.where(criteria).first()', functi
         })
         .catch(e => {
             done(e);
-        })
-})
+        });
+});
 
 it('#10. Should error when using db.where(criteria).first() with no results ', function (done) {
     collection
@@ -143,8 +144,8 @@ it('#10. Should error when using db.where(criteria).first() with no results ', f
         })
         .catch(e => {
             done();
-        })
-})
+        });
+});
 
 it('#11. Should error when using db.first(criteria) with no results ', function (done) {
     collection
@@ -155,8 +156,8 @@ it('#11. Should error when using db.first(criteria) with no results ', function 
         })
         .catch(e => {
             done();
-        })
-})
+        });
+});
 
 it('#12. Should be able to get data by using db.singleOrDefault(criteria)', function (done) {
     collection
@@ -167,8 +168,8 @@ it('#12. Should be able to get data by using db.singleOrDefault(criteria)', func
         })
         .catch(e => {
             done(e);
-        })
-})
+        });
+});
 
 it('#13. Should be able to get data by using db.where(criteria).singleOrDefault()', function (done) {
     collection
@@ -180,8 +181,8 @@ it('#13. Should be able to get data by using db.where(criteria).singleOrDefault(
         })
         .catch(e => {
             done(e);
-        })
-})
+        });
+});
 
 it('#14. Should return null when using db.where(criteria).singleOrDefault() with no results ', function (done) {
     collection
@@ -193,8 +194,8 @@ it('#14. Should return null when using db.where(criteria).singleOrDefault() with
         })
         .catch(e => {
             done(e);
-        })
-})
+        });
+});
 
 it('#15. Should return null using db.singleOrDefault(criteria) with no results ', function (done) {
     collection
@@ -205,8 +206,8 @@ it('#15. Should return null using db.singleOrDefault(criteria) with no results '
         })
         .catch(e => {
             done(e);
-        })
-})
+        });
+});
 
 it('#16. Should error when using db.where(criteria).singleOrDefault() more than one result', function (done) {
     collection
@@ -218,8 +219,8 @@ it('#16. Should error when using db.where(criteria).singleOrDefault() more than 
         })
         .catch(e => {
             done();
-        })
-})
+        });
+});
 
 it('#17. Should error when using db.singleOrDefault(criteria) with more than one result', function (done) {
     collection
@@ -230,8 +231,8 @@ it('#17. Should error when using db.singleOrDefault(criteria) with more than one
         })
         .catch(e => {
             done();
-        })
-})
+        });
+});
 
 it('#18. Should be able to get data using db.where(criteria).execute() with simple criteria', function (done) {
     collection
@@ -243,8 +244,8 @@ it('#18. Should be able to get data using db.where(criteria).execute() with simp
         })
         .catch(e => {
             done(e);
-        })
-})
+        });
+});
 
 it('#19. Should be able to get data using db.where(criteria).execute() with logical $and criteria', function (done) {
     collection
@@ -256,8 +257,8 @@ it('#19. Should be able to get data using db.where(criteria).execute() with logi
         })
         .catch(e => {
             done(e);
-        })
-})
+        });
+});
 
 it('#20. Should only return 2 fields (_id & name)', function (done) {
     collection
@@ -274,8 +275,8 @@ it('#20. Should only return 2 fields (_id & name)', function (done) {
         })
         .catch(e => {
             done(e);
-        })
-})
+        });
+});
 
 it('#21. Should update successfuly', function (done) {
     person.name = person.name + '[updated]';
@@ -286,7 +287,7 @@ it('#21. Should update successfuly', function (done) {
         })
         .catch(e => {
             done(e);
-        })
+        });
 });
 
 it('#22. Should be able to get updated data successfuly', function (done) {
@@ -301,7 +302,7 @@ it('#22. Should be able to get updated data successfuly', function (done) {
         })
         .catch(e => {
             done(e);
-        })
+        });
 });
 
 it('#23. Should be able to delete data successfully', function (done) {
@@ -311,7 +312,7 @@ it('#23. Should be able to delete data successfully', function (done) {
         })
         .catch(e => {
             done(e);
-        })
+        });
 });
 
 it('#24. Should not be able to get deleted data', function (done) {
@@ -322,5 +323,5 @@ it('#24. Should not be able to get deleted data', function (done) {
         })
         .catch(e => {
             done();
-        })
+        });
 });

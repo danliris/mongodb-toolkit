@@ -1,145 +1,111 @@
-var Db = require('mongodb').Db;
-var ObjectId = require('mongodb').ObjectId;
-var Collection = require('mongodb').Collection;
-var Query = require('./query');
+var Db = require("mongodb").Db;
+var ObjectId = require("mongodb").ObjectId;
+var Collection = require("mongodb").Collection;
+var Query = require("./query");
 
 (function() {
 
     function single(query) {
-        return new Promise((resolve, reject) => {
-            if (query)
-                this.where(query);
+        if (query)
+            this.where(query);
 
-            this.take(2)
-                .orderBy([{
-                    _id: -1
-                }])
-                .execute()
-                .then(docs => {
-                    if (docs.count == 0)
-                        reject('no document found in `' + this.s.name + '`');
-                    else if (docs.count > 1)
-                        reject('expected one doc');
-                    else
-                        resolve(docs.data[0]);
-                })
-                .catch(e => {
-                    reject(e);
-                });
-        });
+        return this.take(2)
+            .orderBy([{}])
+            .execute()
+            .then((docs) => {
+                if (docs.count == 0)
+                    return Promise.reject("no document found in `" + this.s.name + "`");
+                else if (docs.count > 1)
+                    return Promise.reject("expected one doc");
+                else
+                    return Promise.resolve(docs.data[0]);
+            });
     }
 
     function singleOrDefault(query) {
-        return new Promise((resolve, reject) => {
-            this.single(query)
-                .then(doc => {
-                    resolve(doc);
-                })
-                .catch(e => {
-                    resolve(null);
-                })
-        })
+
+        return this.single(query)
+            .then((doc) => {
+                return Promise.resolve(doc);
+            })
+            .catch((e) => {
+                return Promise.resolve(null);
+            });
     }
 
     function first(query) {
-        return new Promise((resolve, reject) => {
-            if (query)
-                this.where(query);
-            this
-                .take(1)
-                .execute()
-                .then(docs => {
-                    if (docs.count == 0)
-                        reject('no document found in `' + this.s.name + '`');
-                    else
-                        resolve(docs.data[0]);
-                })
-                .catch(e => {
-                    reject(e);
-                });
-        })
+        if (query)
+            this.where(query);
+        return this
+            .take(1)
+            .execute()
+            .then((docs) => {
+                if (docs.count == 0)
+                    return Promise.reject("no document found in `" + this.s.name + "`");
+                else
+                    return Promise.resolve(docs.data[0]);
+            })
+            .catch((e) => {
+                return Promise.reject(e);
+            });
     }
 
     function firstOrDefault(query) {
-        return new Promise((resolve, reject) => {
-            this.first(query)
-                .then(doc => {
-                    resolve(doc);
-                })
-                .catch(e => {
-                    resolve(null);
-                })
-        });
+        return this.first(query)
+            .then((doc) => {
+                return Promise.resolve(doc);
+            })
+            .catch((e) => {
+                return Promise.resolve(null);
+            });
     }
 
     function insert(doc) {
-        return new Promise((resolve, reject) => {
-            this
-                .insertOne(doc)
-                .then(result => {
-                    if (result.insertedCount < 1)
-                        reject(this.s.name + ": failed to insert");
-                    else {
-                        var id = result.insertedId;
-                        resolve(id);
-                    }
-                })
-                .catch(e => reject(e));
-        })
+        return this
+            .insertOne(doc)
+            .then((result) => {
+                if (result.insertedCount < 1)
+                    return Promise.reject(this.s.name + ": failed to insert");
+                else {
+                    var id = result.insertedId;
+                    return Promise.resolve(id);
+                }
+            });
     }
 
     function update(doc) {
-        return new Promise((resolve, reject) => {
-            if (!doc._id)
-                reject('unable to update document without _id field.')
-            else {
-                var q = {
-                    _id: new ObjectId(doc._id)
-                };
-                this.single(q)
-                    .then(dbDoc => {
-                        var _doc = Object.assign(dbDoc, doc);
-                        delete _doc._id;
-                        this.updateOne(q, {
-                                $set: _doc
-                            })
-                            .then(updateResult => {
-                                if (updateResult.result.n != 1 && updateResult.result.ok != 1)
-                                    reject('update result not equal 1 or update result is not ok');
-                                else {
-                                    resolve(q._id);
-                                }
-                            })
-                            .catch(e => {
-                                reject(e);
-                            });
+        var q = {
+            _id: ObjectId.isValid(doc._id) ? new ObjectId(doc._id) : null
+        };
+        return this.single(q)
+            .then((dbDoc) => {
+                var _doc = Object.assign(dbDoc, doc);
+                delete _doc._id;
+                return this.updateOne(q, {
+                        $set: _doc
                     })
-                    .catch(e => reject(e));
-            }
-        });
+                    .then((updateResult) => {
+                        if (updateResult.result.n != 1 && updateResult.result.ok != 1)
+                            return Promise.reject("update result not equal 1 or update result is not ok");
+                        else {
+                            return Promise.resolve(q._id);
+                        }
+                    });
+            });
     }
 
     function _delete(doc) {
-        return new Promise((resolve, reject) => {
-            if (!doc._id)
-                reject('unable to delete document without _id field.')
-            else {
-                var q = {
-                    _id: new ObjectId(doc._id)
-                };
-                this.deleteOne(q)
-                    .then(deleteResult => {
-                        if (deleteResult.result.n != 1 && deleteResult.result.ok != 1)
-                            reject('delete result not equal 1 or delete result is not ok');
-                        else {
-                            resolve(q._id);
-                        }
-                    })
-                    .catch(e => {
-                        reject(e);
-                    });
-            }
-        });
+        var q = {
+            _id: ObjectId.isValid(doc._id) ? new ObjectId(doc._id) : null
+        };
+        return this.deleteOne(q)
+            .then((deleteResult) => {
+                if (deleteResult.result.n != 1 && deleteResult.result.ok != 1)
+                    return Promise.reject("delete result not equal 1 or delete result is not ok");
+                else {
+                    return Promise.resolve(q._id);
+                }
+            });
     }
 
     function query() {
@@ -150,54 +116,45 @@ var Query = require('./query');
     }
 
     function execute() {
-        return new Promise((resolve, reject) => {
-            var query = this.query();
-            var projection = {};
-            if (query.fields && query.fields instanceof Array)
-                for (var field of query.fields) {
-                    projection[field] = 1;
-                }
+        var query = this.query();
+        var projection = {};
+        if (query.fields && query.fields instanceof Array)
+            for (var field of query.fields) {
+                projection[field] = 1;
+            }
 
-            var cursor = this.find(query.selector, projection);
+        var cursor = this.find(query.selector, projection);
 
-            cursor.count()
-                .then(count => {
+        return cursor.count()
+            .then((count) => {
 
-                    if (query.offset)
-                        cursor = cursor.skip(query.offset);
-                    if (query.limit)
-                        cursor = cursor.limit(query.limit);
-                    if (query.sort)
-                        cursor = cursor.sort(query.sort);
+                cursor = query.offset ? cursor.skip(query.offset) : cursor;
+                cursor = query.limit ? cursor.limit(query.limit) : cursor;
+                cursor = query.sort ? cursor.sort(query.sort) : cursor;
 
-                    cursor.toArray()
-                        .then(docs => {
-                            this._query = null;
-                            var result = {
-                                data: docs,
-                                count: docs.length,
-                                size: query.limit,
-                                total: count,
-                                page: query.offset / query.limit + 1
-                            };
-                            if (query.fields && query.fields instanceof Array)
-                                result.select = query.fields;
-                            result.order = query.sort;
-                            result.filter = query.filter;
+                return cursor.toArray()
+                    .then((docs) => {
+                        this._query = null;
+                        var result = {
+                            data: docs,
+                            count: docs.length,
+                            size: query.limit,
+                            total: count,
+                            page: query.offset / query.limit + 1
+                        };
+                        if (query.fields && query.fields instanceof Array)
+                            result.select = query.fields;
+                        result.order = query.sort;
+                        result.filter = query.filter;
 
-                            resolve(result);
-                        })
-                        .catch(e => {
-                            this._query = null;
-                            reject(e);
-                        });
+                        return Promise.resolve(result);
+                    });
 
-                })
-                .catch(e => {
-                    this._query = null;
-                    reject(e);
-                });
-        });
+            })
+            .catch((e) => {
+                this._query = null;
+                return Promise.reject(e);
+            });
     }
 
     function where(criteria) {
@@ -234,12 +191,12 @@ var Query = require('./query');
         this.query().select(fields);
         return this;
     }
-    // Preserve original method with underscore '_' prefix;
+    // Preserve original method with underscore "_" prefix;
     if (Collection.prototype.insert)
         Collection.prototype._insert = Collection.prototype.insert;
     Collection.prototype.insert = insert;
 
-    // Preserve original method with underscore '_' prefix;
+    // Preserve original method with underscore "_" prefix;
     if (Collection.prototype.update)
         Collection.prototype._update = Collection.prototype.update;
     Collection.prototype.update = update;
