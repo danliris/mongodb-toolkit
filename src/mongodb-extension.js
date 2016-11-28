@@ -5,7 +5,7 @@ var Query = require("./query");
 
 (function() {
 
-    function single(query) {
+    function single(query, _defaultToNull) {
         if (query)
             this.where(query);
 
@@ -13,35 +13,28 @@ var Query = require("./query");
             .orderBy([{}])
             .execute()
             .then((docs) => {
-                if (docs.count == 0)
-                    return Promise.reject("no document found in `" + this.s.name + "`");
-                else if (docs.count > 1)
-                    return Promise.reject("expected one doc");
-                else
+                if (docs.count === 0)
+                    return _defaultToNull ? Promise.resolve(null) : Promise.reject("no document found in `" + this.s.name + "`");
+                else if (docs.count === 1)
                     return Promise.resolve(docs.data[0]);
+                else
+                    return Promise.reject("expected one doc");
             });
     }
 
     function singleOrDefault(query) {
-
-        return this.single(query)
-            .then((doc) => {
-                return Promise.resolve(doc);
-            })
-            .catch((e) => {
-                return Promise.resolve(null);
-            });
+        return this.single(query, true);
     }
 
-    function first(query) {
+    function first(query, _defaultToNull) {
         if (query)
             this.where(query);
         return this
             .take(1)
             .execute()
             .then((docs) => {
-                if (docs.count == 0)
-                    return Promise.reject("no document found in `" + this.s.name + "`");
+                if (docs.count === 0)
+                    return _defaultToNull ? Promise.resolve(null) : Promise.reject("no document found in `" + this.s.name + "`");
                 else
                     return Promise.resolve(docs.data[0]);
             })
@@ -51,13 +44,7 @@ var Query = require("./query");
     }
 
     function firstOrDefault(query) {
-        return this.first(query)
-            .then((doc) => {
-                return Promise.resolve(doc);
-            })
-            .catch((e) => {
-                return Promise.resolve(null);
-            });
+        return this.first(query, true);
     }
 
     function insert(doc) {
@@ -113,7 +100,7 @@ var Query = require("./query");
             this._query = new Query();
         }
         return this._query;
-    } 
+    }
 
     function _load(query) {
         var projection = {};
