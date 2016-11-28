@@ -3,7 +3,7 @@ var ObjectId = require("mongodb").ObjectId;
 var Collection = require("mongodb").Collection;
 var Query = require("./query");
 
-(function() {
+function extension() {
 
     function single(query, _defaultToNull) {
         if (query) {
@@ -84,7 +84,7 @@ var Query = require("./query");
             _id: ObjectId.isValid(doc._id) ? new ObjectId(doc._id) : null
         };
         return this._getDbVersion(doc)
-            .then(dbDoc => {
+            .then((dbDoc) => {
                 return this.updateOne(q, {
                     $set: dbDoc
                 });
@@ -151,8 +151,9 @@ var Query = require("./query");
                     total: count,
                     page: query.offset / query.limit + 1
                 };
-                if (query.fields && query.fields instanceof Array)
+                if (query.fields && query.fields instanceof Array) {
                     result.select = query.fields;
+                }
                 result.order = query.sort;
                 result.filter = query.filter;
                 return Promise.resolve(result);
@@ -225,4 +226,6 @@ var Query = require("./query");
     Db.prototype.use = function(collectionName) {
         return this.collection(collectionName);
     };
-})();
+}
+
+extension();

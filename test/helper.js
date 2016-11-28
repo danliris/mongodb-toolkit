@@ -22,7 +22,7 @@ exports.newData = function() {
     var stamp = Date.now() / 1000 | 0;
     return {
         code: stamp.toString(36),
-        name: 'Name-' + stamp,
+        name: "Name-" + stamp,
         date: new Date(),
         age: parseInt((17 + Math.random() * 28).toString(), 10),
         skills: getSkillSet()

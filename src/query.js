@@ -21,12 +21,29 @@ Query.prototype.skip = function(offset) {
     return this;
 };
 
-Query.prototype.page = function(page, size) {
-    var parsePage = (isNaN(page) ? 0 : parseInt(page, 10)) - 1;
-    var parseSize = isNaN(size) ? 0 : parseInt(size, 10);
+function parsePage(page) {
+    if (isNaN(page)) {
+        return 0;
+    }
+    else {
+        var _page = parseInt(page, 10);
+        return _page - 1;
+    }
+}
 
-    var _page = parsePage < 0 ? 0 : parsePage;
-    var _size = parseSize < 1 ? 1 : parseSize;
+function parseSize(size) {
+    if (isNaN(size)) {
+        return 1;
+    }
+    else {
+        var _size = parseInt(size, 10);
+        return _size;
+    }
+}
+
+Query.prototype.page = function(page, size) {
+    var _page = parsePage(page);
+    var _size = parseSize(size);
 
     this.skip(_page * _size).take(_size);
     return this;
@@ -40,7 +57,6 @@ Query.prototype.orderBy = function(field, asc) {
 
 Query.prototype.order = function(order) {
     this.sort = order;
-    // this.sort[field] = (asc || "true").toString().toLowerCase() === "true" ? 1 : -1;;
     return this;
 };
 
@@ -51,11 +67,5 @@ Query.prototype.select = function(fields) {
     this.fields = fields;
     return this;
 };
-
-Query.prototype.index = function(index) {
-    this.use_index = index;
-    return this;
-};
-
 
 module.exports = Query;
