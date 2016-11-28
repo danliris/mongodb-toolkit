@@ -22,8 +22,11 @@ Query.prototype.skip = function(offset) {
 };
 
 Query.prototype.page = function(page, size) {
-    var _page = (parseInt(page || "0", 10) - 1) < 0 ? 0 : (parseInt(page || "0", 10) - 1);
-    var _size = parseInt(size || "1", 10) < 1 ? 1 : parseInt(size || "1", 10);
+    var parsePage = (isNaN(page) ? 0 : parseInt(page, 10)) - 1;
+    var parseSize = isNaN(size) ? 0 : parseInt(size, 10);
+
+    var _page = parsePage < 0 ? 0 : parsePage;
+    var _size = parseSize < 1 ? 1 : parseSize;
 
     this.skip(_page * _size).take(_size);
     return this;
