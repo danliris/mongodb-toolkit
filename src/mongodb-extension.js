@@ -113,47 +113,43 @@ var Query = require("./query");
             this._query = new Query();
         }
         return this._query;
-    }
+    } 
 
-    function execute() {
-        var query = this.query();
+    function _load(query) {
         var projection = {};
         if (query.fields && query.fields instanceof Array)
             for (var field of query.fields) {
                 projection[field] = 1;
             }
+        var countCursor = this.find(query.selector, projection);
 
-        var cursor = this.find(query.selector, projection);
+        countCursor = query.offset ? countCursor.skip(query.offset) : countCursor;
+        countCursor = query.limit ? countCursor.limit(query.limit) : countCursor;
+        countCursor = query.sort ? countCursor.sort(query.sort) : countCursor;
 
-        return cursor.count()
-            .then((count) => {
+        return countCursor.toArray();
+    }
 
-                cursor = query.offset ? cursor.skip(query.offset) : cursor;
-                cursor = query.limit ? cursor.limit(query.limit) : cursor;
-                cursor = query.sort ? cursor.sort(query.sort) : cursor;
+    function execute() {
+        var query = this.query();
+        return Promise.all([this.find(query.selector).count(), this._load(query)])
+            .then(results => {
+                var count = results[0];
+                var docs = results[1];
 
-                return cursor.toArray()
-                    .then((docs) => {
-                        this._query = null;
-                        var result = {
-                            data: docs,
-                            count: docs.length,
-                            size: query.limit,
-                            total: count,
-                            page: query.offset / query.limit + 1
-                        };
-                        if (query.fields && query.fields instanceof Array)
-                            result.select = query.fields;
-                        result.order = query.sort;
-                        result.filter = query.filter;
-
-                        return Promise.resolve(result);
-                    });
-
-            })
-            .catch((e) => {
                 this._query = null;
-                return Promise.reject(e);
+                var result = {
+                    data: docs,
+                    count: docs.length,
+                    size: query.limit,
+                    total: count,
+                    page: query.offset / query.limit + 1
+                };
+                if (query.fields && query.fields instanceof Array)
+                    result.select = query.fields;
+                result.order = query.sort;
+                result.filter = query.filter;
+                return Promise.resolve(result);
             });
     }
 
@@ -207,6 +203,7 @@ var Query = require("./query");
     Collection.prototype.first = first;
     Collection.prototype.firstOrDefault = firstOrDefault;
     Collection.prototype.query = query;
+    Collection.prototype._load = _load;
     Collection.prototype.execute = execute;
     Collection.prototype.where = where;
     Collection.prototype.take = take;
