@@ -1,6 +1,9 @@
 var Query = function() {
     this.selector = {};
     this.sort = {};
+    this.offset = 0;
+    this.limit = 0;
+    this.fields = [];
 };
 
 Query.prototype.where = function(criteria) {
@@ -9,12 +12,12 @@ Query.prototype.where = function(criteria) {
 };
 
 Query.prototype.take = function(limit) {
-    this.limit = limit;
+    this.limit = limit < 0 ? 0 : limit;
     return this;
 };
 
 Query.prototype.skip = function(offset) {
-    this.offset = offset;
+    this.offset = offset < 0 ? 0 : offset;
     return this;
 };
 
@@ -39,6 +42,9 @@ Query.prototype.order = function(order) {
 };
 
 Query.prototype.select = function(fields) {
+    if (!fields instanceof Array) {
+        throw Error("fields should be an array of string");
+    }
     this.fields = fields;
     return this;
 };

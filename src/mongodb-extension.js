@@ -30,16 +30,19 @@ var Query = require("./query");
     }
 
     function first(query, _defaultToNull) {
-        if (query)
+        if (query) {
             this.where(query);
+        }
         return this
             .take(1)
             .execute()
             .then((docs) => {
-                if (docs.count === 0)
+                if (docs.count === 0) {
                     return _defaultToNull ? Promise.resolve(null) : Promise.reject("no document found in `" + this.s.name + "`");
-                else
+                }
+                else {
                     return Promise.resolve(docs.data[0]);
+                }
             })
             .catch((e) => {
                 return Promise.reject(e);
@@ -54,8 +57,9 @@ var Query = require("./query");
         return this
             .insertOne(doc)
             .then((result) => {
-                if (result.insertedCount < 1)
+                if (result.insertedCount < 1) {
                     return Promise.reject(this.s.name + ": failed to insert");
+                }
                 else {
                     var id = result.insertedId;
                     return Promise.resolve(id);
@@ -109,17 +113,17 @@ var Query = require("./query");
 
     function _load(query) {
         var projection = {};
-        if (query.fields && query.fields instanceof Array)
-            for (var field of query.fields) {
-                projection[field] = 1;
-            }
-        var countCursor = this.find(query.selector, projection);
-
-        countCursor = query.offset ? countCursor.skip(query.offset) : countCursor;
-        countCursor = query.limit ? countCursor.limit(query.limit) : countCursor;
-        countCursor = query.sort ? countCursor.sort(query.sort) : countCursor;
-
-        return countCursor.toArray();
+        // if (query.fields && query.fields instanceof Array) {
+        for (var field of query.fields) {
+            projection[field] = 1;
+        }
+        // }
+        return this
+            .find(query.selector, projection)
+            .skip(query.offset)
+            .limit(query.limit)
+            .sort(query.sort)
+            .toArray();
     }
 
     function execute() {
