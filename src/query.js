@@ -61,7 +61,7 @@ Query.prototype.order = function(order) {
 };
 
 Query.prototype.select = function(fields) {
-    if (!fields instanceof Array) {
+    if (!(fields instanceof Array)) {
         throw Error("fields should be an array of string");
     }
     this.fields = fields;
