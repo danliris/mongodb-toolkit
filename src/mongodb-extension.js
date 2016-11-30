@@ -24,10 +24,7 @@ function single(query, _defaultToNull) {
 }
 
 function singleOrDefault(query) {
-    return this.single(query, true)
-        .catch((e) => {
-            return Promise.resolve(null);
-        });
+    return this.single(query, true);
 }
 
 function first(query, _defaultToNull) {
