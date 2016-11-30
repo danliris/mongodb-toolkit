@@ -4,7 +4,9 @@
   "description": "mongodb toolkit",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test/index.js"
+    "test": "mocha test/index.js",
+    "cover": "istanbul cover _mocha",
+    "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls"
   },
   "repository": {
     "type": "git",
@@ -20,7 +22,10 @@
     "mocha": "^2.5.3",
     "mongo-factory": "^1.0.0",
     "mongodb": "^2.1.18",
-    "should": "^9.0.2"
+    "should": "^9.0.2",
+    "mocha-lcov-reporter": "^1.2.0",
+    "coveralls": "^2.11.15",
+    "istanbul": "^0.4.5"
   },
   "directories": {
     "test": "test"
