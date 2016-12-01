@@ -18,9 +18,11 @@ function getSkillSet() {
     return skillSet;
 }
 
-exports.newData = function() {
+exports.newData = function(no, group) {
     var stamp = Date.now() / 1000 | 0;
     return {
+        no: no || stamp,
+        group: group || 0,
         code: stamp.toString(36),
         name: "Name-" + stamp,
         date: new Date(),
