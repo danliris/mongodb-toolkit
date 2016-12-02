@@ -2,7 +2,7 @@ require("mongodb");
 require("../src/mongodb-extension");
 
 var helper = require("./helper");
-var should = require("should"); 
+var should = require("should");
 
 var personId;
 var person;
@@ -568,6 +568,33 @@ it("#32. Should be able to get data 6 data when .page(3,7) order by no asc", fun
             for (var i = 0, off = 15; off < 20; i++, off++) {
                 result.data[i].no.should.equal(off);
             }
+            done();
+        })
+        .catch((e) => {
+            done(e);
+        });
+});
+
+it("#32. Should be able to get data 1 data when .page(null,null) order by no asc", function(done) {
+    collection
+        .where({
+            "$and": [{
+                no: {
+                    $lte: 20
+                }
+            }, {
+                group: group
+            }]
+        })
+        .page(null, null)
+        .order({
+            no: 1
+        })
+        .execute()
+        .then((result) => {
+            result.data.should.instanceOf(Array);
+            result.data.length.should.equal(1);
+            result.data[0].no.should.equal(1);
             done();
         })
         .catch((e) => {
