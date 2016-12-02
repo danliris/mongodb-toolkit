@@ -658,3 +658,32 @@ it("#37. Should be able to get data 1 data when .page(null,null) order by no asc
             done(e);
         });
 });
+
+it("#38. Should be able to get data 15 data when .skip(5) .order({no:1})", function(done) {
+    collection
+        .where({
+            "$and": [{
+                no: {
+                    $lte: 20
+                }
+            }, {
+                group: group
+            }]
+        })
+        .skip(5)
+        .order({
+            no: 1
+        })
+        .execute()
+        .then((result) => {
+            result.data.should.instanceOf(Array);
+            result.data.length.should.equal(15);
+            for (var i = 0, off = 6; off < 20; i++, off++) {
+                result.data[i].no.should.equal(off);
+            }
+            done();
+        })
+        .catch((e) => {
+            done(e);
+        });
+});
