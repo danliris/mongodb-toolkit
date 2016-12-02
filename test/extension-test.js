@@ -16,7 +16,7 @@ before("#00. Initialize;", function(done) {
             collection = db.use("people");
             var people = [];
             group = new Date().getTime().toString();
-            for (var i = 0; i < 30; i++) {
+            for (var i = 0; i < 20; i++) {
                 people.push(helper.newData(i + 1, group));
             }
             collection.insertMany(people)
@@ -263,7 +263,7 @@ it("#15. Should error when using db.where(criteria).singleOrDefault() more than 
 
 
 
-it("#16. Should be able to get data by using db.first(criteria)", function(done) {
+it("#17. Should be able to get data by using db.first(criteria)", function(done) {
     collection
         .first({
             age: {
@@ -279,7 +279,50 @@ it("#16. Should be able to get data by using db.first(criteria)", function(done)
         });
 });
 
-it("#17. Should error when using db.first(criteria) with no results ", function(done) {
+it("#18. Should be able to get data by using db.firstOrDefault(criteria) order({no:1})", function(done) {
+    collection
+        .order({
+            no: 1
+        })
+        .firstOrDefault({
+            age: {
+                $gt: 0
+            },
+            group: group
+        })
+        .then((doc) => {
+            doc.should.instanceOf(Object);
+            doc.should.have.property("no");
+            doc.no.should.equal(1);
+            done();
+        })
+        .catch((e) => {
+            done(e);
+        });
+});
+it("#19. Should be able to get data by using db.firstOrDefault(criteria) order({no:-1})", function(done) {
+    collection
+        .order({
+            no: -1
+        })
+        .firstOrDefault({
+            age: {
+                $gt: 0
+            },
+            group: group
+        })
+        .then((doc) => {
+            doc.should.instanceOf(Object);
+            doc.should.have.property("no");
+            doc.no.should.equal(20);
+            done();
+        })
+        .catch((e) => {
+            done(e);
+        });
+});
+
+it("#20. Should error when using db.first(criteria) with no results ", function(done) {
     collection
         .first({
             _id: 0
@@ -293,7 +336,21 @@ it("#17. Should error when using db.first(criteria) with no results ", function(
         });
 });
 
-it("#18. Should be able to get data by using db.where(criteria).first()", function(done) {
+it("#21. Should get null when using db.firstOrDefault(criteria) with no results ", function(done) {
+    collection
+        .firstOrDefault({
+            _id: 0
+        })
+        .then((doc) => {
+            should.equal(null, doc);
+            done();
+        })
+        .catch((e) => {
+            done("should have error");
+        });
+});
+
+it("#22. Should be able to get data by using db.where(criteria).first()", function(done) {
     collection
         .where({
             age: {
@@ -310,7 +367,7 @@ it("#18. Should be able to get data by using db.where(criteria).first()", functi
         });
 });
 
-it("#19. Should error when using db.where(criteria).first() with no results ", function(done) {
+it("#23. Should error when using db.where(criteria).first() with no results ", function(done) {
     collection
         .where({
             _id: 0
@@ -326,7 +383,7 @@ it("#19. Should error when using db.where(criteria).first() with no results ", f
 });
 
 
-it("#20. Should be able to get data using db.where(criteria).execute() with simple criteria", function(done) {
+it("#24. Should be able to get data using db.where(criteria).execute() with simple criteria", function(done) {
     collection
         .where({
             age: {
@@ -343,7 +400,7 @@ it("#20. Should be able to get data using db.where(criteria).execute() with simp
         });
 });
 
-it("#21. Should be able to get data using db.where(criteria).execute() with logical $and criteria", function(done) {
+it("#25. Should be able to get data using db.where(criteria).execute() with logical $and criteria", function(done) {
     collection
         .where({
             $and: [{
@@ -362,7 +419,7 @@ it("#21. Should be able to get data using db.where(criteria).execute() with logi
         });
 });
 
-it("#22. Should only return 2 fields (_id & name)", function(done) {
+it("#26. Should only return 2 fields (_id & name)", function(done) {
     collection
         .select(["_id", "name"])
         .first()
@@ -378,7 +435,7 @@ it("#22. Should only return 2 fields (_id & name)", function(done) {
         });
 });
 
-it("#23. Should return all fields when .select(null)", function(done) {
+it("#27. Should return all fields when .select(null)", function(done) {
     collection
         .select(null)
         .first({
@@ -396,7 +453,7 @@ it("#23. Should return all fields when .select(null)", function(done) {
         });
 });
 
-it("#24. Should update successfuly", function(done) {
+it("#28. Should update successfuly", function(done) {
     person.name = person.name + "[updated]";
     collection.update(person)
         .then((id) => {
@@ -408,7 +465,7 @@ it("#24. Should update successfuly", function(done) {
         });
 });
 
-it("#25. Should be able to get updated data successfuly", function(done) {
+it("#29. Should be able to get updated data successfuly", function(done) {
     collection
         .single({
             _id: personId
@@ -425,7 +482,7 @@ it("#25. Should be able to get updated data successfuly", function(done) {
         });
 });
 
-it("#26. Should be able to delete data successfully", function(done) {
+it("#30. Should be able to delete data successfully", function(done) {
     collection.delete(person)
         .then((result) => {
             done();
@@ -435,7 +492,7 @@ it("#26. Should be able to delete data successfully", function(done) {
         });
 });
 
-it("#27. Should not be able to get deleted data", function(done) {
+it("#31. Should not be able to get deleted data", function(done) {
     collection
         .single({
             _id: personId
@@ -448,7 +505,7 @@ it("#27. Should not be able to get deleted data", function(done) {
         });
 });
 
-it("#28. Should not be able to get deleted data", function(done) {
+it("#32. Should not be able to get deleted data", function(done) {
     collection
         .single({
             _id: personId
@@ -461,7 +518,7 @@ it("#28. Should not be able to get deleted data", function(done) {
         });
 });
 
-it("#29. Should be able to get data 20 data order by no asc", function(done) {
+it("#33. Should be able to get data 20 data order by no asc", function(done) {
     collection
         .where({
             "$and": [{
@@ -489,7 +546,7 @@ it("#29. Should be able to get data 20 data order by no asc", function(done) {
         });
 });
 
-it("#30. Should be able to get data 20 data order by no desc", function(done) {
+it("#34. Should be able to get data 20 data order by no desc", function(done) {
     collection
         .where({
             "$and": [{
@@ -517,7 +574,7 @@ it("#30. Should be able to get data 20 data order by no desc", function(done) {
         });
 });
 
-it("#31. Should be able to get data 10 data when .page(1,10) order by no asc", function(done) {
+it("#35. Should be able to get data 10 data when .page(1,10) order by no asc", function(done) {
     collection
         .where({
             "$and": [{
@@ -546,7 +603,7 @@ it("#31. Should be able to get data 10 data when .page(1,10) order by no asc", f
         });
 });
 
-it("#32. Should be able to get data 6 data when .page(3,7) order by no asc", function(done) {
+it("#36. Should be able to get data 6 data when .page(3,7) order by no asc", function(done) {
     collection
         .where({
             "$and": [{
@@ -575,7 +632,7 @@ it("#32. Should be able to get data 6 data when .page(3,7) order by no asc", fun
         });
 });
 
-it("#32. Should be able to get data 1 data when .page(null,null) order by no asc", function(done) {
+it("#37. Should be able to get data 1 data when .page(null,null) order by no asc", function(done) {
     collection
         .where({
             "$and": [{
