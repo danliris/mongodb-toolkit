@@ -49,14 +49,17 @@ Query.prototype.page = function(page, size) {
     return this;
 };
 
-Query.prototype.orderBy = function(field, asc) {
-    this.sort = {};
-    this.sort[field] = (asc || "true").toString().toLowerCase() === "true" ? 1 : -1;
+Query.prototype.orderBy = function(field, asc, preservePreviousSort) {
+    this.sort = preservePreviousSort ? this.sort : {};
+    this.sort[field] = ((asc === "asc" || asc === 1).toString() || "true").toString().toLowerCase() === "true" ? 1 : -1;
     return this;
 };
 
 Query.prototype.order = function(order) {
-    this.sort = order;
+    this.sort = {};
+    for (var field of Object.getOwnPropertyNames(order)) {
+        this.orderBy(field, order[field], true);
+    }
     return this;
 };
 
