@@ -8,7 +8,7 @@ function single(query, _defaultToNull) {
         this.where(query);
     }
     return this.take(2)
-        .orderBy([{}])
+        .orderBy("_updatedDate")
         .execute()
         .then((docs) => {
             if (docs.count === 0) {
